@@ -1,0 +1,23 @@
+# 这是基本数据信息的配置，将其整合到配置里，便于维护
+
+
+
+# 校区
+com.constant.enums.Campus: # 这一行是类的类名
+  cam1: 1|软件园校区
+  cam2: 2|兴隆山校区
+  cam3: 3|中心校区
+  cam4: 4|洪家楼校区
+  cam5: 5|趵突泉校区
+  cam6: 6|千佛山校区
+
+
+
+# 职位
+com.constant.enums.Position:
+  pos1: 1|普通成员
+  pos2: 2|核心成员
+  pos3: 3|总监
+  pos4: 4|站长
+
+
