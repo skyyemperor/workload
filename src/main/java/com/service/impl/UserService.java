@@ -41,10 +41,11 @@ public class UserService implements IUserService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public Info login(String userId, String password) {
         //首先登录，若返回token不为空，则登录成功
-        String token = getTokenByLogin(userId, password);
-        if (token.equals("")) {
+        Info tokenInfo = getTokenByLogin(userId, password);
+
+        if (tokenInfo.getCode() != 0) {
             //登录失败
-            return InfoUtil.getInfo(1, "对不起，你的你的学号或密码输错了");
+            return tokenInfo;
         }
 
         //判断用户是否存在
@@ -52,7 +53,7 @@ public class UserService implements IUserService {
         //用户不存在
         if (userInfo.getCode() != 0) {
             //通过token和i山大接口获取用户信息
-            User user = getUserInfoByToken(token);
+            User user = getUserInfoByToken(tokenInfo.getData().toString());
             //插入新的用户
             if (!insertUser(user)) {
                 return InfoUtil.getInfo(InfoEnum.FAIL);
@@ -161,7 +162,7 @@ public class UserService implements IUserService {
     }
 
     //登录i山大接口获取token
-    private String getTokenByLogin(String userId, String password) {
+    private Info getTokenByLogin(String userId, String password) {
         String token = "";
         int time = 0;
         while (time++ < 3) { //设置请求次数最多为3次
@@ -182,7 +183,8 @@ public class UserService implements IUserService {
                         List<String> data = ParseUtil.getStringArray(ParseUtil.getFieldFromJson(ans, "data"));
                         token = data.get(0);
                     } else {
-                        break;//密码错误直接退出
+                        //密码错误直接退出
+                        return InfoUtil.getInfo(1, "对不起，你的你的学号或密码输错了");
                     }
                 }
             } catch (IOException e) {
@@ -190,10 +192,10 @@ public class UserService implements IUserService {
             }
             //如果token不为空，则请求成功
             if (!token.equals("")) {
-                break;
+                return InfoUtil.getInfo(token);
             }
         }
-        return token;
+        return InfoUtil.getInfo(InfoEnum.FAIL);
     }
 
     //利用token获取用户姓名，学院

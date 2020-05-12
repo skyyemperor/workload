@@ -6,7 +6,7 @@ public enum InfoEnum {
      */
     SUCCESS(0, "success!!"),
     FAIL(-1, "服务器错误"),
-    AUTH_ERROR(601, "登录已过期，请重新登录"),
+    AUTH_ERROR(601, "认证失败，请重新登录"),
     PARAMS_NULL(602, "请求字段不能为空"),
     ;
 

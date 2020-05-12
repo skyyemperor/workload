@@ -31,21 +31,28 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         String token = request.getHeader("Token");
         //token不存在
-        if (null != token) {
-            //验证token是否正确
-            if (JwtUtil.verify(token)) {
-                //获取token中携带的userId
-                String userId = JwtUtil.getUserId(token);
-                //将userId存到session
-                HttpSession session = request.getSession();
-                session.setAttribute("userId", userId);
-                return true;
-            }
+        if (token == null) {
+            responseMessage(response, InfoUtil.getInfo(603, "token不能为空"));
+            return false;
         }
-        System.out.println("tkjv fd");
-        Info info = InfoUtil.getInfo(InfoEnum.AUTH_ERROR);
-        responseMessage(response, info);
-        return false;
+        //验证token是否正确
+        if (!JwtUtil.verify(token)) {
+            responseMessage(response, InfoUtil.getInfo(InfoEnum.AUTH_ERROR));
+            return false;
+        }
+        if (JwtUtil.judgeExpireDate(token)) {
+            JSONObject jsonObject = new JSONObject();
+            //更新token
+            jsonObject.put("newToken", JwtUtil.refreshToken(token));
+            responseMessage(response, InfoUtil.getInfo(604, "token将要过期，请利用新的token重新请求", jsonObject));
+            return false;
+        }
+        //获取token中携带的userId
+        String userId = JwtUtil.getUserId(token);
+        //将userId存到session
+        HttpSession session = request.getSession();
+        session.setAttribute("userId", userId);
+        return true;
     }
 
     @Override

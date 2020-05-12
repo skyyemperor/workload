@@ -6,14 +6,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JwtUtil {
     /**
-     * 过期时间一天，
-     * TODO 正式运行时修改为15分钟
+     * 过期时间一月
      */
     private static final long EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000L;
     /**
@@ -56,7 +56,37 @@ public class JwtUtil {
     }
 
     /**
-     * 生成签名,15min后过期
+     * 判断当前日期是否在token失效日期之前的七天内
+     * @param token
+     * @return
+     */
+    public static boolean judgeExpireDate(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            //获取token失效日期
+            LocalDate endDate = DateUtil.date2LocalDate(jwt.getExpiresAt());
+            //当前日期在token失效日期之前的七天内
+            if (endDate.minusDays(7).isBefore(LocalDate.now())) {
+                return true;
+            }
+        } catch (JWTDecodeException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 更新token，并返回新的token
+     * @param token
+     * @return
+     */
+    public static String refreshToken(String token) {
+        String userId = getUserId(token);
+        return sign(userId);
+    }
+
+    /**
+     * 生成签名,一个月后过期
      *
      * @param userId 用户名
      * @return 加密的token
