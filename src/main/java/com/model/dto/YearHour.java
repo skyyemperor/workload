@@ -1,4 +1,4 @@
-package com.model.vo;
+package com.model.dto;
 
 /**
  * 根据总获取时长，返回的数据类型

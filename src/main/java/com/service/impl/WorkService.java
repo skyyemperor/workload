@@ -3,8 +3,8 @@ package com.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.model.entity.Work;
 import com.mapper.WorkMapper;
-import com.model.vo.MonthHour;
-import com.model.vo.YearHour;
+import com.model.dto.MonthHour;
+import com.model.dto.YearHour;
 import com.service.intf.IWorkService;
 import com.util.InfoUtils.Info;
 import com.util.InfoUtils.InfoEnum;
@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -29,7 +29,7 @@ public class InviteCodeInterceptor implements HandlerInterceptor {
         if (userService.getUserVerified(userId) == 1) {
             return true;
         } else {
-            Info info = InfoUtil.getInfo(603, "请输入邀请码后再来访问");
+            Info info = InfoUtil.getInfo(605, "请输入邀请码后再来访问");
             responseMessage(response, info);
         }
         return false;
